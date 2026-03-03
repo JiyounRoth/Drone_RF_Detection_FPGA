@@ -15,11 +15,15 @@ class IQSignalGenerator:
         signal = np.exp(1j * phase)
         return t, signal
     
+    def apply_hanning_window(self, signal):
+        window = np.hanning(len(signal))
+        windowed_signal = signal * window
+        return windowed_signal
     # ==============================================
     # Add Gaussian noise to achieve SNR of 10 dB
     # SNR (dB) = 10 * log10(P_signal / P_noise)
     # ==============================================
-    def add_white_noise(self, input_signal, snr_db = 10):
+    def add_white_noise(self, input_signal, snr_db):
         
         signal_power = np.mean(np.abs(input_signal)**2)
         noise_power = signal_power / (10**(snr_db/10))
@@ -64,7 +68,7 @@ class IQSignalGenerator:
     # ==================================================================
     # FM modulation to simulate FPV, FHSS and Micro-Doppler effects
     # ==================================================================
-    def generate_FPV_signal(self, video_bw_mhz=5.0, deviation_mhz=8.0):
+    def generate_FPV_signal(self, video_bw_mhz, deviation_mhz):
         # Baseband random video content as Gaussian noise
         raw_video = np.random.normal(0, 1, len(self.t)) 
         # Analog LPF to limit bandwidth to 5 MHz, 
@@ -109,7 +113,7 @@ class IQSignalGenerator:
 
     def generate_micro_doppler_signal(self, engine_rpm, blades, beta): 
         # beta (0.01 to 0.2) controls the depth of modulation
-        #  - stress test 0 01: 
+        #  - stress test 0.01: 
         #  - realistic (small drone) 0.05
         #  - robust (large drone) 0.1 to 0.2
 
