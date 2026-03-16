@@ -5,14 +5,11 @@ import numpy as np
 
 class PlotUtils:
     @staticmethod
-    def plot_time_freq(fs,sin_vals, cos_vals, num_of_samples, filename):
+    def plot_time_domain(x_time, sin_vals, cos_vals, filename):
         
-        N = num_of_samples
-        x = np.arange(N)/fs
-
         plt.figure(figsize=(10,5))
-        plt.plot(x, sin_vals,"bo", label="sin")
-        plt.plot(x, cos_vals,"ro", label="cos")
+        plt.plot(x_time, sin_vals,"bo", label="sin")
+        plt.plot(x_time, cos_vals,"ro", label="cos")
         plt.title(f"{filename} sin/cos in timedomain")
         plt.xlabel("Time (s)")
         plt.ylabel("Amplitude")
@@ -21,7 +18,10 @@ class PlotUtils:
         plt.savefig(f"{filename}_sin_cos.png")
         plt.close()
 
-        
+    @staticmethod
+    def plot_fft(fs, sin_vals, cos_vals, filename):
+
+        N = len(sin_vals)
         freqs = np.fft.fftfreq(N, d=1/fs)
         fft_sin = np.fft.fftshift(np.fft.fft(sin_vals)/N)
         fft_cos = np.fft.fftshift(np.fft.fft(cos_vals)/N)
@@ -39,4 +39,9 @@ class PlotUtils:
         plt.close()
     
 
-    
+    def plot_time_freq(fs,sin_vals, cos_vals, num_of_samples, filename):
+        
+        x_time= np.arange(num_of_samples)/fs
+        PlotUtils.plot_time_domain(x_time,sin_vals, cos_vals, filename )
+        PlotUtils.plot_fft(fs, sin_vals, cos_vals, filename)
+        
