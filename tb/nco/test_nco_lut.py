@@ -1,10 +1,11 @@
-import matplotlib
-matplotlib.use("Agg") # select non-GUI backend
-import matplotlib.pyplot as plt
 import numpy as np
+
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge
+
+from tb.fixedpoint import FixedPoint
+from tb.tb_plot_utils import PlotUtils
 
 @cocotb.test()
 async def test_nco_lut(dut):
@@ -41,14 +42,14 @@ async def test_nco_lut(dut):
 
         if read_latency_1clk is not None:
             # Read sin and cos from DUT
-            sin_val = int(dut.sin_abs.value)
-            cos_val = int(dut.cos_abs.value)
+            sin_val = dut.sin_abs.value.signed_integer
+            cos_val = dut.cos_abs.value.signed_integer
 
             assert 0 <= sin_val <= 2**15 - 1, "sin value is out of range"
             assert 0 <= cos_val <= 2**15 - 1, "cos value is out of range"
 
-            sin_vals[addr-1] = sin_val
-            cos_vals[addr-1] = cos_val
+            sin_vals[addr-1] = FixedPoint.q1_15_to_float(sin_val)
+            cos_vals[addr-1] = FixedPoint.q1_15_to_float(cos_val)
             #dut._log.info(f"2nd. if-loof, addr={addr-1}: sin_vals[{addr-1}]={sin_vals[addr-1]}, cos_vals[{addr-1}]={cos_vals[addr-1]}")
 
         read_latency_1clk = 1
@@ -60,12 +61,10 @@ async def test_nco_lut(dut):
        
     
     #Plot
-    x = np.linspace(0, data_depth-1, data_depth)
-    plt.plot(x, sin_vals, color= "blue", marker="o",label="sin" )
-    plt.plot(x, cos_vals, color= "red", marker="o", label="cos")
-    plt.legend()
-    plt.grid()
-    plt.savefig("nco_LUT.png") 
+    fs = 100e6
+    x_time = np.arange(data_depth)/fs
+    PlotUtils.plot_time_domain(x_time,sin_vals, cos_vals, "nco_LUT")
+     
 
         
         
