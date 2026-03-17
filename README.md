@@ -9,8 +9,8 @@ This project implements a high-performance RF Signal Detection pipeline on an FP
 
 ## Tech Stack
 - **Languages:** Python 3.12 (Modeling), VHDL-2008 (RTL)
-- **Tools:** Xilinx Vivado (Artix-7/Zynq), GHDL, GTKWave, Cocotb
-- **Hardware Target:** Xilinx Artix-7 (e.g., Basys3, Nexys Video) or Zynq-7000.
+- **Tools:** Xilinx Vivado, GHDL, GTKWave, Cocotb
+- **Hardware Target:** XCK26 Zynq UltraScale+ MPSoC) - migrated Artix-7/Zynq-7000, now used as part of a larger drone project.
 
 ## Project Structure
 - **model/** : Python scripts for signal synthesis and Golden Model verification
