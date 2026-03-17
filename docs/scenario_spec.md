@@ -1,6 +1,6 @@
 Project Scenario: Real-time Drone RF Detection System
 
-    This project implements a high-performance RF Signal Detection pipeline on an FPGA specifically designed for Portabel/Handheld Counter-UAS (Unmanned Aircraft Systems) Hardware. The design focuses on real-time drone signal identification while minimizing power consumption and hardware resource footprints (SWaP optimization)
+This project implements a high-performance RF Signal Detection pipeline on an FPGA specifically designed for Portabel/Handheld Counter-UAS (Unmanned Aircraft Systems) Hardware. The design focuses on real-time drone signal identification while minimizing power consumption and hardware resource footprints (SWaP optimization)
 
 1. Target Environment & Portable Hardware Specs
 
@@ -28,7 +28,7 @@ Project Scenario: Real-time Drone RF Detection System
 
 3. Development Methodology
 
-    - Phase 1(Python): Modeling the RF environment, evaluating SNR vs. Power trade-offs, and generating Golden Test Vectors.
+    - Phase 1 (Python): Modeling the RF environment, evaluating SNR vs. Power trade-offs, and generating Golden Test Vectors.
 
     - Phase 2 (VHDL/RTL): Direct RTL coding for precise hardware control, focusing on Timing Closure and Low-Power Synthesis (Target: Xilinx Artix-7 or Zynq-7000 series).
 
@@ -39,7 +39,7 @@ Project Scenario: Real-time Drone RF Detection System
     - Editor: Visual Studio Code (with TerosHDL extension)
     - HDL: VHDL-2008
     - Simulator: GHDL & GTKWave
-    - Synthesis: Xilix Vivado (Target: Artix-7/Zynq-7000)
+    - Synthesis: Xilinx Vivado (Target: XCK26 Zynq UltraScale+ MPSoC) - migrated Artix-7/Zynq-7000, now used as part of a larger drone project.
 
 5. System Specification
     - Target signal : 70 MHz IF(Intermediate Frequency)
@@ -49,22 +49,27 @@ Project Scenario: Real-time Drone RF Detection System
     - Quantisation bits : 16 bits
     - Sliding Interval: 512 Samples (75% Overlap)
     - Windowing: Hann/Hamming Window for spectral leakage reduction
-
-6. Project Structure
+7. Hardwares
+    - FPGA/SoC : AMD Kria K26 SOM (mounted on a KV260 Vision Starter Kit $249 + $59 (Kria KV260 Basic Accessory Pack))
+    - RF Front-End/Receiver : Ettu USRP B200mini-i 
+    - Vision Sensor: Raspberry Pi Camera Modue V2 : RF logic detects a 2.4GHz signal, it triggers the Vision AI to visually track the target drone.
+    - Analog Interface (70MHz IF Scenario): Mini-Circuits BPF-F70+(Bandpass Filter), because of the Undersampling Scenario, it clears all noise except the 70MHz band before it hits the ADC, preventing "Ghost Signals" from ruining 100MPSP aliasing strategy
+      
+8. Project Structure
     - README.md
     - model/
         - main.py
             - signal_gen.py
             - undersampling_test.py
-            - fixed_point_ref.py 
+            - fixed_point_ref.py
+        - nco
     - rtl/
     - sim/
         - Mixer
         - Low-pass Filters
-        - Decimation
         - Baseband IQ
         - Sliding FFT
-        - Energy detection
+          
 
     - docs/
 
