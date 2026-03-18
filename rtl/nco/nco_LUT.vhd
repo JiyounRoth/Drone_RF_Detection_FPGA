@@ -14,6 +14,7 @@ entity nco_LUT is
     );
     port (
         clk : in std_logic;
+        en  : in std_logic;
         addr_sin : in unsigned(ADDR_WIDTH - 1 downto 0);
         addr_cos : in unsigned(ADDR_WIDTH - 1 downto 0);
         sin_abs : out signed(OUT_WIDTH - 1 downto 0);
@@ -89,19 +90,17 @@ architecture ROM of nco_LUT is
         62 => signed'("0111111111110100"),
         63 => signed'("0111111111111111")
     );
-    signal sin_abs_temp : signed(OUT_WIDTH - 1 downto 0):=(others => '0');
-    signal cos_abs_temp : signed(OUT_WIDTH - 1 downto 0):=(others => '0');
+    
 begin
 
 process(clk)
 begin
     if rising_edge(clk) then
-        sin_abs_temp <= sin_lut(to_integer(addr_sin));
-        cos_abs_temp <= sin_lut(to_integer(addr_cos));
+        if en = '1' then
+            sin_abs <= sin_lut(to_integer(addr_sin));
+            cos_abs <= sin_lut(to_integer(addr_cos));
+        end if;
     end if;
 end process;
-
-sin_abs <= sin_abs_temp;
-cos_abs <= cos_abs_temp;
 
 end architecture;
