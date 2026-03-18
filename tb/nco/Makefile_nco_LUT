@@ -1,9 +1,10 @@
 SIM = ghdl
+
 TOPLEVEL_LANG = vhdl
 
-VHDL_SOURCES = rtl/nco_LUT.vhd
+VHDL_SOURCES = rtl/nco/nco_LUT.vhd
 TOPLEVEL = nco_lut
-COCOTB_TEST_MODULES = tb.test_nco_lut
+COCOTB_TEST_MODULES = tb.nco.test_nco_lut
 
 GHDL_ARGS += --std=08
 SIM_ARGS += --vcd=wave.vcd
