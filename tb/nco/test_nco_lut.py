@@ -10,7 +10,7 @@ from tb.tb_plot_utils import PlotUtils
 @cocotb.test()
 async def test_nco_lut(dut):
     
-    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 10, unit="ns").start())
 
     dut.addr_sin.value = 0
     dut.addr_cos.value = 0
@@ -24,6 +24,8 @@ async def test_nco_lut(dut):
     await RisingEdge(dut.clk)
    
     read_latency_1clk = None
+    dut.en.value = 1
+    
    
     for addr in range (data_depth + 1):
         
@@ -42,8 +44,8 @@ async def test_nco_lut(dut):
 
         if read_latency_1clk is not None:
             # Read sin and cos from DUT
-            sin_val = dut.sin_abs.value.signed_integer
-            cos_val = dut.cos_abs.value.signed_integer
+            sin_val = dut.sin_abs.value.to_signed()
+            cos_val = dut.cos_abs.value.to_signed()
 
             assert 0 <= sin_val <= 2**15 - 1, "sin value is out of range"
             assert 0 <= cos_val <= 2**15 - 1, "cos value is out of range"
@@ -64,7 +66,9 @@ async def test_nco_lut(dut):
     fs = 100e6
     x_time = np.arange(data_depth)/fs
     PlotUtils.plot_time_domain(x_time,sin_vals, cos_vals, "nco_LUT")
-     
+    
+        
+        
 
         
         
